@@ -16,6 +16,7 @@ export interface IOptions {
 	withCuda?: boolean
 	removeWavFileAfterTranscription?: boolean
 	logger?: Console
+	silent?: boolean
 }
 
 export declare function nodewhisper(filePath: string, options: IOptions): Promise<string>

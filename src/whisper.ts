@@ -67,9 +67,9 @@ function isBuildConfigured(): boolean {
 }
 
 export async function whisperShell(
-	command: string,
-	options: IShellOptions = defaultShellOptions,
-	logger: Logger = console
+command: string,
+options: IShellOptions = defaultShellOptions,
+logger: Logger = console
 ): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
 		const shellOptions = {
@@ -101,9 +101,10 @@ export async function whisperShell(
 }
 
 export async function executeCppCommand(
-	command: string,
-	logger: Logger = console,
-	withCuda: boolean = false
+command: string,
+logger: Logger = console,
+withCuda: boolean = false,
+silent: boolean = false
 ): Promise<string> {
 	try {
 		shell.cd(WHISPER_CPP_PATH)
@@ -143,8 +144,8 @@ export async function executeCppCommand(
 			// Verify executable was created
 			if (!checkExecutableExists(logger)) {
 				throw new Error(
-					'[Nodejs-whisper] Build completed but executable not found. Please check the build output for errors.'
-				)
+'[Nodejs-whisper] Build completed but executable not found. Please check the build output for errors.'
+)
 			}
 
 			logger.log('[Nodejs-whisper] Build completed successfully.')
@@ -152,7 +153,12 @@ export async function executeCppCommand(
 			logger.debug('[Nodejs-whisper] whisper-cli executable found. Skipping build.')
 		}
 
-		return await whisperShell(command, defaultShellOptions, logger)
+		const shellOptions: IShellOptions = {
+			silent: silent,
+			async: true,
+		}
+
+		return await whisperShell(command, shellOptions, logger)
 	} catch (error) {
 		handleError(error as Error, logger)
 		throw error

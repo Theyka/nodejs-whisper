@@ -12,10 +12,11 @@ export interface IOptions {
 	withCuda?: boolean
 	removeWavFileAfterTranscription?: boolean
 	logger?: Logger
+	silent?: boolean
 }
 
 export async function nodewhisper(filePath: string, options: IOptions) {
-	const { removeWavFileAfterTranscription = false, logger = console } = options
+	const { removeWavFileAfterTranscription = false, logger = console, silent = false } = options
 
 	try {
 		if (options.autoDownloadModelName) {
@@ -37,7 +38,7 @@ export async function nodewhisper(filePath: string, options: IOptions) {
 		const command = constructCommand(outputFilePath, options)
 
 		logger.debug(`[Nodejs-whisper] Executing command: ${command}`)
-		const transcript = await executeCppCommand(command, logger, options.withCuda)
+		const transcript = await executeCppCommand(command, logger, options.withCuda, silent)
 
 		if (!transcript) {
 			throw new Error('Transcription failed or produced no output.')
